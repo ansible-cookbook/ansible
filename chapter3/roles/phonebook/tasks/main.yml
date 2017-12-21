@@ -7,27 +7,27 @@
     name: epel-release
     state: present
 
-#- name: install dependencies 
-#  package:
-#    name: "{{ item }}"
-#    state: present
-#  with_items:
-#  - git
-#  - python-pip
-#  - gcc
-#  - python-devel
-#  - mysql-devel  
+- name: install dependencies 
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - git
+  - python-pip
+  - gcc
+  - python-devel
+  - mysql-devel  
 
-#- name: install python libraries
-#  pip:
-#    name: "{{ item }}"
-#    state: present
-#  with_items:
-#  - flask
-#  - flask-sqlalchemy
-#  - flask-migrate
-#  - uwsgi
-#  - MySQL-python
+- name: install python libraries
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - flask
+  - flask-sqlalchemy
+  - flask-migrate
+  - uwsgi
+  - MySQL-python
 
 - name: get the application code
   git:
