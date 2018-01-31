@@ -1,0 +1,153 @@
+---
+- name: adding public key
+  os_keypair:
+    name: aditya
+    public_key: {{ aditya_pub_key }}
+  tags:
+    - recipe2
+
+- name: delete a public key
+  os_keypair:
+    name: aditya
+    state: absent
+
+- name: create a security group for web servers
+  os_security_group:
+    name: web-sg
+    state: present
+    description: security group for web servers
+
+- name: allow port 80 for http
+  os_security_group_rule:
+    security_group: web-sg
+    protocol: tcp
+    port_range_min: 80
+    port_range_max: 80
+    remote_ip_prefix: 0.0.0.0/0
+
+- name: allow port 22 for SSH
+  os_security_group_rule:
+    security_group: web-sg
+    protocol: tcp
+    port_range_min: 22
+    port_range_max: 22
+    remote_ip_prefix: 0.0.0.0/0
+
+- os_network:
+    state: present
+    name: private
+
+- os_subnet:
+    state: present
+    network_name: private
+    name: app
+    cidr: 192.168.0.0/24
+    dns_nameservers:
+       - 8.8.4.4
+       - 8.8.8.8
+    host_routes:
+       - destination: 0.0.0.0/0
+         nexthop: 104.131.86.234
+       - destination: 192.168.0.0/24
+         nexthop: 192.168.0.1
+
+- name: Deploy an instance
+  os_server:
+    state: present
+    name: webserver
+    image: cirros
+    key_name: aditya
+    security_groups: web-sg
+    wait: yes
+    flavor: m1.tiny
+    auto_floating_ip: yes
+    network: private
+    meta:
+      hostname: webserver.localdomain
+
+- name: stop the webserver
+  os_server_action:
+    action: stop
+    server: webserver
+
+- name: create 5G test volume
+  os_volume:
+    state: present
+    size: 5
+    display_name: data
+
+- name: attach volume to host
+  os_server_volume:
+    state: present
+    server: webserver
+    volume: data
+
+- name: create an object container
+  os_object:
+    state: present
+    container: backup
+
+- name: upload backup.tar to backup container
+  os_object:
+    filename: /opt/backup.tar
+    container: backup
+    name: backup.tar
+    state: present
+
+- os_keystone_domain:
+    name: demodomain
+    description: Demo Domain
+    state: present
+  register: demo_domain
+
+- os_keystone_role:
+    state: present
+    name: demorole
+
+- os_project:
+    state: present
+    name: demoproject
+    description: Demo Project
+    domain_id: ""{{ demo_domain.id }}""
+    enabled: True
+
+- os_group:
+    state: present
+    name: demogroup
+    description: ""Demo Group""
+    domain_id: ""{{ demo_domain.id }}""
+
+- os_user:
+    name: demouser
+    password: secret-pass
+    update_password: on_create
+    email: demo@example.com
+    domain: ""{{ demo_domain.id }}""
+    state: present
+
+- os_user_group:
+    user: demouser
+    group: demogroup
+
+- os_user_role:
+    group: demo2
+    role: demorole
+    domain: ""{{ demo_domain.id }}""
+
+- name: Create a custom flavor 
+  os_nova_flavor:
+    name: custom1
+    ram: 1024
+    vcpus: 1
+    disk: 10
+    ephemeral: 10
+    state: present
+
+- os_image:
+    name: fedora-cloud-27
+    container_format: bare
+    disk_format: qcow2
+    id: ""{{ ansible_date_time.epoch | to_uuid }}""
+    filename: /opt/Fedora-Cloud-Base-27-1.6.x86_64.qcow2
+    state: present
+
