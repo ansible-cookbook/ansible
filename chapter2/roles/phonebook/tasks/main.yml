@@ -52,7 +52,7 @@
   mysql_db:
     name: phonebook
     state: present
-    login_host: "{{ groups['phonebook_db'][0] }}"
+    login_host: "{{hostvars[groups['tag_Application_cookbook_test'][0]].ansible_host}}"
     login_user: cookbook_admin
     login_password: "{{ rds_admin_pass }}"
 
@@ -63,7 +63,7 @@
     priv: 'phonebook.*:ALL'
     host: "%"
     state: present
-    login_host: "{{ groups['phonebook_db'][0] }}"
+    login_host: "{{hostvars[groups['tag_Application_cookbook_test'][0]].ansible_host}}"
     login_user: cookbook_admin
     login_password: "{{ rds_admin_pass }}"
 
