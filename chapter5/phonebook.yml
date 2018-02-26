@@ -1,0 +1,7 @@
+---
+# Ansible playbook can be run using following command
+# ansible-playbook -i azure_rm.py phonebook.yml -u ubuntu
+- name: Provision azure hosts with phonebook application
+  hosts: first_vm
+  roles:
+    - phonebook

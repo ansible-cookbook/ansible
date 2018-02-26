@@ -1,0 +1,10 @@
+---
+# Playbook can be run using following command
+# ansible-playbook phonebook.yml -i ec2.py --ask-vault-pass -u centos
+- name: Provision phonebook application
+  hosts: tag_Name_phonebook01
+  vars_files:
+      - roles/aws/vars/secrets.yml
+  roles:
+      - phonebook
+
