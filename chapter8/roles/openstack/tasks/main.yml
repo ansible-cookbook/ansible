@@ -33,11 +33,13 @@
     port_range_max: 22
     remote_ip_prefix: 0.0.0.0/0
 
-- os_network:
+- name: creating a private network
+  os_network:
     state: present
     name: private
 
-- os_subnet:
+- name: creating a private subnet
+  os_subnet:
     state: present
     network_name: private
     name: app
@@ -94,30 +96,35 @@
     name: backup.tar
     state: present
 
-- os_keystone_domain:
+- name: creating a demo domain
+  os_keystone_domain:
     name: demodomain
     description: Demo Domain
     state: present
   register: demo_domain
 
-- os_keystone_role:
+- name: creating a demo role
+  os_keystone_role:
     state: present
     name: demorole
 
-- os_project:
+- name: creating a demo project
+  os_project:
     state: present
     name: demoproject
     description: Demo Project
     domain_id: ""{{ demo_domain.id }}""
     enabled: True
 
-- os_group:
+- name: creating a demo group
+  os_group:
     state: present
     name: demogroup
     description: ""Demo Group""
     domain_id: ""{{ demo_domain.id }}""
 
-- os_user:
+- name: creating a demo user
+  os_user:
     name: demouser
     password: secret-pass
     update_password: on_create
@@ -125,11 +132,13 @@
     domain: ""{{ demo_domain.id }}""
     state: present
 
-- os_user_group:
+- name: adding user to the group
+  os_user_group:
     user: demouser
     group: demogroup
 
-- os_user_role:
+- name: adding role to the group
+  os_user_role:
     group: demo2
     role: demorole
     domain: ""{{ demo_domain.id }}""
@@ -143,7 +152,8 @@
     ephemeral: 10
     state: present
 
-- os_image:
+- name: adding Fedora 27 as an image
+  os_image:
     name: fedora-cloud-27
     container_format: bare
     disk_format: qcow2
