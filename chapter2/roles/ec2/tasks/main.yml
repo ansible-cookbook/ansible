@@ -9,7 +9,7 @@
   register: my_first_vpc
   tags:
     - vpc
-    - tip1
+    - recipe2
 
 - name: Create Public Subnet in VPC
   ec2_vpc_subnet:
@@ -25,7 +25,7 @@
   register: my_public_subnet
   tags:
     - vpc
-    - tip1
+    - recipe2
 
 - name: Create Private Subnet in VPC
   ec2_vpc_subnet:
@@ -41,7 +41,7 @@
   register: my_private_subnet
   tags:
     - vpc
-    - tip1
+    - recipe2
 
 - name: Create Internet Gateway
   ec2_vpc_igw:
@@ -53,7 +53,7 @@
   register: my_first_igw
   tags:
     - vpc
-    - tip1
+    - recipe2
 
 - name: Create NAT Gateway
   ec2_vpc_nat_gateway:
@@ -67,7 +67,7 @@
   register: my_first_nat_gateway
   tags:
     - vpc
-    - tip1
+    - recipe2
 
 - name: Create Route Table for Public Subnet
   ec2_vpc_route_table:
@@ -84,7 +84,7 @@
       Name: Public Subnet Route Table
   tags:
     - vpc
-    - tip1
+    - recipe2
 
 - name: Create Route Table for Private Subnet
   ec2_vpc_route_table:
@@ -101,7 +101,7 @@
       Name: Private Subnet Route Table
   tags:
     - vpc
-    - tip1
+    - recipe2
 
 - name: Create EC2 Security Group
   ec2_group:
@@ -134,7 +134,7 @@
   register: my_first_sg
   tags:
     - security_group
-    - tip2
+    - recipe3
 
 #Creating EC2 Key pair
 - name: Create EC2 Key Pair
@@ -147,7 +147,7 @@
     state: present
   tags:
     - ec2_instance
-    - tip3
+    - recipe4
 
 - name: Create EC2 Instance in private subnet
   ec2:
@@ -167,7 +167,7 @@
       Name: Private Instance
   tags:
     - ec2_instance
-    - tip3
+    - recipe4
 
 - name: Create EC2 Instance in public subnet
   ec2:
@@ -189,7 +189,7 @@
   register: ec2_public_instance
   tags:
     - ec2_instance
-    - tip3
+    - recipe4
 
 #Creating and attaching EIPs to instance
 - name: Allocate Elastic IP and associate it with an instance
@@ -203,7 +203,7 @@
   register: elastic_ip
   tags:
     - elastic_ip
-    - tip4
+    - recipe5
 
 ##Attaching EC2 volume to Public Instance created
 - name: Create EBS volume and attach to Instance
@@ -219,7 +219,7 @@
   register: ec2_vol
   tags:
     - ebs_volume
-    - tip5
+    - recipe6
 
 - name: Create AMI of Public Instance Created
   ec2_ami:
@@ -237,7 +237,7 @@
   register: image
   tags:
     - ami
-    - tip6
+    - recipe7
 
 
 - name: Create ELB in public subnet
@@ -257,7 +257,7 @@
   register: my_first_elb
   tags:
     - elb
-    - tip7
+    - recipe8
 
 - name: Get all running ec2 instances with given tags
   ec2_remote_facts:
@@ -270,7 +270,7 @@
   register: ec2_instances_private
   tags:
     - elb
-    - tip7
+    - recipe8
 
 - name: Register all private instances with elb created
   ec2_elb:
@@ -285,7 +285,7 @@
   ignore_errors: yes
   tags:
     - elb
-    - tip7
+    - recipe8
 
 - name: Deregister all private instances with elb created
   ec2_elb:
@@ -300,7 +300,7 @@
   ignore_errors: yes
   tags:
     - elb
-    - tip7
+    - recipe8
 
 #AutoScaling
 - name: Create Launch Configuration
@@ -316,7 +316,7 @@
     instance_monitoring: yes
   tags:
     - autoscaling
-    - tip8
+    - recipe9
 
 - name: Create Auto Scaling group
   ec2_asg:
@@ -336,7 +336,7 @@
       - environment: test
   tags:
     - autoscaling
-    - tip8
+    - recipe9
 
 - name: Configure Scaling Policies (scale-up)
   ec2_scaling_policy:
@@ -352,7 +352,7 @@
   register: scale_up_policy
   tags:
     - autoscaling
-    - tip8
+    - recipe9
 
 - name: Configure CloudWatch Metric for Scaling Up Policy
   ec2_metric_alarm:
@@ -376,7 +376,7 @@
       - "{{ scale_up_policy.arn }}"
   tags:
     - autoscaling
-    - tip8
+    - recipe9
 
 - name: Adding Elastic IP to the phonebook-infra
   add_host: 
@@ -385,4 +385,4 @@
   with_items: "{{ elastic_ip }}"
   tags:
     - deployment
-    - tip9
+    - recipe10

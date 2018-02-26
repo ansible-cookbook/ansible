@@ -19,8 +19,7 @@
         cidr_ip: 0.0.0.0/0
   register: rds_sg
   tags:
-    - tip1
-    - chapter02
+    - recipe1
 
 - name: Create RDS Instance
   rds:
@@ -44,8 +43,7 @@
           Application: cookbook-test
   register: rds_result
   tags:
-    - tip1
-    - chapter02
+    - recipe1
 
 - name: Create Route53 record
   route53:
@@ -61,8 +59,7 @@
           - 2.2.2.2
           - 3.3.3.3
   tags:
-    - tip2
-    - chapter02
+    - recipe2
 
 - name: Get existing Route53 record
   route53:
@@ -74,8 +71,7 @@
     type: A
     register: record
   tags:
-    - tip2
-    - chapter02
+    - recipe2
 
 - name: Delete existing Route53 record
   route53:
@@ -88,8 +84,7 @@
     type: "{{ record.set.type }}"
     value: "{{ record.set.value }}"
   tags:
-    - tip2
-    - chapter02
+    - recipe2
 
 #Creating an empty s3 bucket
 - name: Creating S3 bucket
@@ -101,8 +96,7 @@
     mode: create
     permission: public-read
   tags:
-    - tip3
-    - chapter02
+    - recipe3
 
 #Putting object
 - name: Put object in S3 bucket
@@ -115,8 +109,7 @@
     src: "{{role_path}}/files/text.txt"
     mode: put
   tags:
-    - tip3
-    - chapter02
+    - recipe3
 
 - name: Create IAM role for lamda
   iam_role:
@@ -127,8 +120,7 @@
     assume_role_policy_document: "{{ lookup('file','policy_lambda.json') }}"
     state: present
   tags:
-    - tip4
-    - chapter02
+    - recipe4
 
 - name: Creating first lambda function
   lambda:
@@ -142,8 +134,7 @@
     role: 'arn:aws:iam::779710563302:role/lambda'
     handler: 'hello_world.my_handler'
   tags:
-    - tip4
-    - chapter02
+    - recipe4
 
 - name: Execute lamda function
   execute_lambda:
@@ -156,14 +147,12 @@
         value: hello
   register: response
   tags:
-    - tip4
-    - chapter02
+    - recipe4
 
 - name: debug
   debug: msg=response
   tags:
-    - tip4
-    - chapter02
+    - recipe4
 
 - name: Create IAM users
   iam:
@@ -178,8 +167,7 @@
     - cookbook-admin
     - cookbook-two
   tags:
-    - tip5
-    - chapter02
+    - recipe5
 
 - name: Assign IAM policy to user
   iam_policy:
@@ -192,5 +180,4 @@
     state: present
     policy_document: "{{role_path}}/files/iam_admin.json"
   tags:
-    - tip5
-    - chapter02
+    - recipe5
