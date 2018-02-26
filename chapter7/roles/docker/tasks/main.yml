@@ -5,15 +5,13 @@
     image: ubuntu:14.04
     command: sleep infinity
   tag:
-    - tip1
-    - chapter06
+    - recipe2
 
 - name: Download docker image
   docker_image:
     name: centos/python-35-centos7
   tag:
-    - tip2
-    - chapter06
+    - recipe3
 
 - name: Build docker image
   docker_image:
@@ -22,15 +20,13 @@
     path: "{{role_path}}/files/docker_files/"
     state: present
   tag:
-    - tip2
-    - chapter06
+    - recipe3
 
 - name: Create volume for docker instance
   docker_volume:
     name: first_volume
   tag:
-    - tip3
-    - chapter06
+    - recipe4
 
 - name: Mount volume to container
   docker_container:
@@ -41,8 +37,7 @@
        - first_volume:/app
     command: sleep infinity
   tag:
-    - tip3
-    - chapter06
+    - recipe4
 
 - name: Setting up a docker registry
   docker_container:
@@ -53,8 +48,7 @@
     ports:
       - 5000:5000
   tag:
-    - tip4
-    - chapter06
+    - recipe5
 
 - name: Log into DockerHub
   docker_login:
@@ -62,8 +56,7 @@
     password: vikas@sirsa
     email: vikas17a@gmail.com
   tag:
-    - tip5
-    - chapter06
+    - recipe6
 
 - name: Push image to Dockerhub
   docker_image:
@@ -73,16 +66,14 @@
     path: "{{role_path}}/files/docker_files/"
     push: yes
   tag:
-    - tip5
-    - chapter06
+    - recipe6
 
 - name: Create application using compose
   docker_service:
      project_src: "{{role_path}}/files/docker_compose"
      state: present
   tag:
-    - tip6
-    - chapter06
+    - recipe7
 
 - name: Scale up web service of compose application
   docker_service:
@@ -90,5 +81,4 @@
      scale:
         web: 2
   tag:
-    - tip7
-    - chapter06
+    - recipe8

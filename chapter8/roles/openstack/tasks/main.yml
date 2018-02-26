@@ -10,12 +10,16 @@
   os_keypair:
     name: aditya
     state: absent
+  tags:
+    - recipe2
 
 - name: create a security group for web servers
   os_security_group:
     name: web-sg
     state: present
     description: security group for web servers
+  tags:
+    - recipe3
 
 - name: allow port 80 for http
   os_security_group_rule:
@@ -24,6 +28,8 @@
     port_range_min: 80
     port_range_max: 80
     remote_ip_prefix: 0.0.0.0/0
+  tags:
+    - recipe3
 
 - name: allow port 22 for SSH
   os_security_group_rule:
@@ -32,11 +38,15 @@
     port_range_min: 22
     port_range_max: 22
     remote_ip_prefix: 0.0.0.0/0
+  tags:
+    - recipe3
 
 - name: creating a private network
   os_network:
     state: present
     name: private
+  tags:
+    - recipe4
 
 - name: creating a private subnet
   os_subnet:
@@ -52,6 +62,8 @@
          nexthop: 104.131.86.234
        - destination: 192.168.0.0/24
          nexthop: 192.168.0.1
+  tags:
+    - recipe4
 
 - name: Deploy an instance
   os_server:
@@ -66,28 +78,38 @@
     network: private
     meta:
       hostname: webserver.localdomain
+  tags:
+    - recipe5
 
 - name: stop the webserver
   os_server_action:
     action: stop
     server: webserver
+  tags:
+    - recipe5
 
 - name: create 5G test volume
   os_volume:
     state: present
     size: 5
     display_name: data
+  tags:
+    - recipe6
 
 - name: attach volume to host
   os_server_volume:
     state: present
     server: webserver
     volume: data
+  tags:
+    - recipe6
 
 - name: create an object container
   os_object:
     state: present
     container: backup
+  tags:
+    - recipe7
 
 - name: upload backup.tar to backup container
   os_object:
@@ -95,6 +117,8 @@
     container: backup
     name: backup.tar
     state: present
+  tags:
+    - recipe7
 
 - name: creating a demo domain
   os_keystone_domain:
@@ -102,11 +126,15 @@
     description: Demo Domain
     state: present
   register: demo_domain
+  tags:
+    - recipe8
 
 - name: creating a demo role
   os_keystone_role:
     state: present
     name: demorole
+  tags:
+    - recipe8
 
 - name: creating a demo project
   os_project:
@@ -115,6 +143,8 @@
     description: Demo Project
     domain_id: ""{{ demo_domain.id }}""
     enabled: True
+  tags:
+    - recipe8
 
 - name: creating a demo group
   os_group:
@@ -122,6 +152,8 @@
     name: demogroup
     description: ""Demo Group""
     domain_id: ""{{ demo_domain.id }}""
+  tags:
+    - recipe8
 
 - name: creating a demo user
   os_user:
@@ -131,17 +163,23 @@
     email: demo@example.com
     domain: ""{{ demo_domain.id }}""
     state: present
+  tags:
+    - recipe8
 
 - name: adding user to the group
   os_user_group:
     user: demouser
     group: demogroup
+  tags:
+    - recipe8
 
 - name: adding role to the group
   os_user_role:
     group: demo2
     role: demorole
     domain: ""{{ demo_domain.id }}""
+  tags:
+    - recipe8
 
 - name: Create a custom flavor 
   os_nova_flavor:
@@ -151,6 +189,8 @@
     disk: 10
     ephemeral: 10
     state: present
+  tags:
+    - recipe9
 
 - name: adding Fedora 27 as an image
   os_image:
@@ -160,4 +200,5 @@
     id: ""{{ ansible_date_time.epoch | to_uuid }}""
     filename: /opt/Fedora-Cloud-Base-27-1.6.x86_64.qcow2
     state: present
-
+  tags:
+    - recipe10
