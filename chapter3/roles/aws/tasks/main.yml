@@ -1,4 +1,7 @@
 ---
+- name: include secrets
+  include_vars: secrets.yml
+
 - name: Create EC2 Security Group for RDS
   ec2_group:
     name: my_rds_sg
