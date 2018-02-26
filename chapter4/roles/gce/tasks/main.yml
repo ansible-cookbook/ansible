@@ -14,7 +14,7 @@
     project_id: "{{ project_id }}"
     credentials_file: "{{ credentials_file }}"    
   tags:
-  - tip1
+  - recipe2
 
 - name: create public ip
   gce_eip:
@@ -26,7 +26,7 @@
     credentials_file: "{{ credentials_file }}"
   register: app_eip
   tags:
-  - tip1
+  - recipe2
 
 - name: create and start the instance
   gce:
@@ -45,7 +45,7 @@
     credentials_file: "{{ credentials_file }}"
     project_id: "{{ project_id }}"    
   tags:
-  - tip1
+  - recipe2
 
 - name: attach persistent disk
   gce_pd:
@@ -58,7 +58,7 @@
     project_id: "{{ project_id }}"
     name: app-pd
   tags:
-  - tip2
+  - recipe3
 
 - name: create snapshot of instance
   gce_snapshot:
@@ -69,7 +69,7 @@
     project_id: "{{ project_id }}"
     credentials_file: "{{ credentials_file }}"
   tags:
-  - tip3
+  - recipe4
 
 - name: tag the instance
   gce_tag:
@@ -81,7 +81,7 @@
     service_account_email: "{{ service_account_email }}"
     project_id: "{{ project_id }}"
   tags:
-  - tip4
+  - recipe5
     
 - name: Create Firewall Rule with Source Tags
   gce_net:
@@ -95,7 +95,7 @@
     project_id: "{{ project_id }}"
     credentials_file: "{{ credentials_file }}"
   tags:
-  - tip5
+  - recipe6
 
 - name: Create Firewall Rule with Source Range
   gce_net:
@@ -109,7 +109,7 @@
     project_id: "{{ project_id }}"
     credentials_file: "{{ credentials_file }}"    
   tags:
-  - tip5 
+  - recipe6 
 
 - name: create load balancer and attach to instance
   gce_lb:
@@ -123,7 +123,7 @@
     project_id: "{{ project_id }}"
     credentials_file: "{{ credentials_file }}"
   tags:
-  - tip6
+  - recipe7
 
 - name: stop the instance
   gce:
@@ -138,7 +138,7 @@
     disk_size: 15
     metadata: "{{ instance_metadata }}"
   tags:
-  - tip7
+  - recipe8
 
 - name: create image
   gce_img:
@@ -150,7 +150,7 @@
     pem_file: "{{ credentials_file }}"
     project_id: "{{ project_id }}"
   tags:
-  - tip7
+  - recipe8
 
 - name: start the instance
   gce:
@@ -165,7 +165,7 @@
     disk_size: 15
     metadata: "{{ instance_metadata }}"
   tags:
-  - tip7
+  - recipe8
 
 - name: create instance template named app-template
   gce_instance_template:
@@ -181,7 +181,7 @@
     credentials_file: "{{ credentials_file }}"
     project_id: "{{ project_id }}"
   tags:
-  - tip8
+  - recipe9
 
 - name: create an instance group with autoscaling
   gce_mig:
@@ -208,7 +208,7 @@
         load_balancing_utilization:
           target: 0.8
   tags:
-  - tip9
+  - recipe10
 
 - name: create a bucket
   gc_storage:
@@ -217,7 +217,7 @@
     gs_access_key: "{{ gs_access_key }}"
     gs_secret_key: "{{ gs_secret_key }}"
   tags:
-  - tip10
+  - recipe11
 
 - name: upload an object
   gc_storage:
@@ -229,7 +229,7 @@
     gs_access_key: "{{ gs_access_key }}"
     gs_secret_key: "{{ gs_secret_key }}"
   tags:
-  - tip10
+  - recipe11
 
 - name: download an object
   gc_storage:
@@ -240,39 +240,39 @@
     gs_access_key: "{{ gs_access_key }}"
     gs_secret_key: "{{ gs_secret_key }}"
   tags:
-  - tip10
+  - recipe11
     
 - name: Configure Google Cloud SDK
   import_tasks: configure_gcloud.yml
   become: yes
   tags:
-  - tip 11        
+  - recipe12      
   
 - name: enable Cloud SQL APIs
   command: gcloud service-management enable sqladmin.googleapis.com
   tags:
-  - tip 11
+  - recipe12
 
 - name: wait for a couple of minutes
   pause:
     minutes: 2
   tags:
-  - tip 11
+  - recipe12
 
 - name: check if the instance is up
   command: gcloud sql instances describe app-db
   register: availability
   ignore_errors: yes
   tags:
-  - tip 11
+  - recipe12
 
 - name: boot SQL instance if it not present
   command: gcloud sql instances create app-db --tier=db-f1-micro --region=us-west1 --authorized-networks={{ app_eip.address }}/32
   when: availability.rc != 0
   tags:
-  - tip 11
+  - recipe12
     
 - name: set root password
   command: gcloud sql users set-password root % --instance app-db --password {{ mysql_root_password }}
   tags:
-  - tip 11
+  - recipe12
