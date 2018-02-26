@@ -10,8 +10,7 @@
         env: testing
     state: present
   tags:
-    - tip2
-    - chapter4
+    - recipe2
 
 - name: Create subnet
   azure_rm_subnet:
@@ -21,8 +20,7 @@
      address_prefix_cidr: "10.2.0.0/24"
      state: present
   tags:
-    - tip2
-    - chapter4
+    - recipe2
 
 - name: Create network interface card
   azure_rm_networkinterface:
@@ -34,15 +32,13 @@
       state: present
   register: network_interface
   tags:
-    - tip2
-    - chapter4
+    - recipe2
 
 - name: Show private ip
   debug:
      msg: "{{network_interface.ip_configuration.private_ip_address}}"
   tags:
-    - tip2
-    - chapter4
+    - recipe2
 
 - name: Create Public IP address
   azure_rm_publicipaddress:
@@ -53,15 +49,13 @@
      state: present
   register: publicip
   tag:
-    - tip3
-    - chapter4
+    - recipe3
 
 - name: Show Public IP address
   debug:
      msg: "{{ publicip.ip_address }}"
   tag:
-    - tip3
-    - chapter4
+    - recipe3
 
 - name: Create network interface card using existing public ip address
   azure_rm_networkinterface:
@@ -73,8 +67,7 @@
      state: present
   register: network_interface02
   tags:
-    - tip4
-    - chapter4
+    - recipe4
 
 - name: Create VM using existing virtual machine
   azure_rm_virtualmachine:
@@ -94,8 +87,7 @@
       version: latest
     network_interfaces: nic02
   tags:
-    - tip4
-    - chapter4
+    - recipe4
 
 - name: Create network security group
   azure_rm_securitygroup:
@@ -129,8 +121,7 @@
            priority: 103
            direction: Inbound
   tags:
-    - tip5
-    - chapter4
+    - recipe5
 
 - name: Create subnet
   azure_rm_subnet:
@@ -141,8 +132,7 @@
      state: present
      security_group_name: mysg01
   tags:
-    - tip5
-    - chapter4
+    - recipe5
 
 - name: Create network interface card using existing public ip address and security group
   azure_rm_networkinterface:
@@ -155,8 +145,7 @@
       state: present
   register: network_interface02
   tags:
-    - tip5
-    - chapter4
+    - recipe5
 
 - name: Create storage container
   azure_rm_storageblob:
@@ -164,6 +153,8 @@
      storage_account_name: examplestroage01
      container: cookbook
      state: present
+  tags:
+    - recipe6
 
 - name: Upload a file to existing container
   azure_rm_storageblob:
@@ -174,6 +165,8 @@
      src: /tmp/myfile.png
      public_access: blob
      content_type: 'application/image'
+  tags:
+    - recipe6
 
 - name: Download blob object
   azure_rm_storageblob:
@@ -182,5 +175,5 @@
      container: cookbook
      blob: myfile.png
      dest: /tmp/download_file.png
-
-
+  tags:
+    - recipe6
